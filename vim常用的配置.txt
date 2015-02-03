@@ -1,0 +1,29 @@
+个人认为在linux下vim要比vi强大很大, 但是很多人下载完后,感觉并没有什么特别,和vi一样都是
+不容易操作,最主要的原因是你还没有配置vim,过程如下:
+
+在home建立自己的配置文件
+切换home #cd ~
+touch一个名为.vimrc的文件
+#vi .vimrc
+
+简单配置内容如下(以下均测试成功,更多请查度娘):
+
+set nocompatible      	 #不使用vi默认键盘布局
+set number 	      	 #显示行号
+set autoindent        	 #自动对齐
+set smartindent       	 #智能对齐
+set showmatch        	 #括号匹配模式
+set ruler             	 #显示状态行
+set incsearch         	 #查询
+set tabstop=4         	 #tab键为4个空格
+set shiftwidth=4          	 #换行时行间交错使用4个空格
+set softtabstop=4        	 #设置（软）制表符宽度为4
+set cindent              	 #C语言格式对齐
+set nobackup               	 #不要备份文件
+set clipboard+=unnamed     	 #与windows共享剪贴板
+syntax on                   	 #语法高亮
+set backspace=indent,eol,start           #backspace删除
+
+
+
+
