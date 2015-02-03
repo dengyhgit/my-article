@@ -535,80 +535,27 @@ git log 有许多选项可以帮助你搜寻感兴趣的提交，接下来我们
 上面的三条命令最终只是产生一个提交，第二个提交命令修正了第一个的提交内容。
 取消已经暂存的文件
 
-接下来的两个小节将演示如何取消暂存区域中的文件，以及如何取消工作目录中已修改的文件。不用担心，查看文件状态的时候就提示了该如何撤消，所以不需要死记硬背。来看下面的例子，有两个修改过的文件，我们想要分开提交，但不小心用 git add . 全加到了暂存区域。该如何撤消暂存其中的一个文件呢？其实，git status 的命令输出已经告诉了我们该怎么做：
-
-	$ git add .
-	    $ git status
-	    # On branch master
-	    # Changes to be committed:
-	    # (use "git reset HEAD <file>..." to unstage)
-	    #
-	    # modified: README.txt
-	    # modified: benchmarks.rb
-	    #
-
-就在 “Changes to be committed” 下面，括号中有提示，可以使用 git reset HEAD <file>... 的方式取消暂存。好吧，我们来试试取消暂存 benchmarks.rb 文件：
-
-	$ git reset HEAD benchmarks.rb
-	    benchmarks.rb: locally modified
-	    $ git status
-	    # On branch master
-	    # Changes to be committed:
-	    # (use "git reset HEAD <file>..." to unstage)
-	    #
-	    # modified: README.txt
-	    #
-	    # Changes not staged for commit:
-	    # (use "git add <file>..." to update what will be committed)
-	    # (use "git checkout -- <file>..." to discard changes in working directory)
-	    #
-	    # modified: benchmarks.rb
-	    #
-
-这条命令看起来有些古怪，先别管，能用就行。现在 benchmarks.rb 文件又回到了之前已修改未暂存的状态。
-取消对文件的修改
-
-如果觉得刚才对 benchmarks.rb 的修改完全没有必要，该如何取消修改，回到之前的状态（也就是修改之前的版本）呢？git status 同样提示了具体的撤消方法，接着上面的例子，现在未暂存区域看起来像这样：
-
-	# Changes not staged for commit:
-	    # (use "git add <file>..." to update what will be committed)
-	    # (use "git checkout -- <file>..." to discard changes in working directory)
-	    #
-	    # modified: benchmarks.rb
-	    #
-
-在第二个括号中，我们看到了抛弃文件修改的命令（至少在 Git 1.6.1 以及更高版本中会这样提示，如果你还在用老版本，我们强烈建议你升级，以获取最佳的用户体验），让我们试试看：
-
-	$ git checkout -- benchmarks.rb
-	    $ git status
-	    # On branch master
-	    # Changes to be committed:
-	    # (use "git reset HEAD <file>..." to unstage)
-	    #
-	    # modified: README.txt
-	    #
-
-可以看到，该文件已经恢复到修改前的版本。你可能已经意识到了，这条命令有些危险，所有对文件的修改都没有了，因为我们刚刚把之前版本的文件复制过来重写了此文件。所以在用这条命令前，请务必确定真的不再需要保留刚才的修改。如果只是想回退版本，同时保留刚才的修改以便将来继续工作，可以用下章介绍的 stashing 和分支来处理，应该会更好些。
-
-记住，任何已经提交到 Git 的都可以被恢复。即便在已经删除的分支中的提交，或者用 --amend 重新改写的提交，都可以被恢复（关于数据恢复的内容见第九章）。所以，你可能失去的数据，仅限于没有提交过的，对 Git 来说它们就像从未存在过一样。
 
 #6. 远程仓库的使用
 
-要参与任何一个 Git 项目的协作，必须要了解该如何管理远程仓库。远程仓库是指托管在网络上的项目仓库，可能会有好多个，其中有些你只能读，另外有些可以写。同他人协作开发某个项目时，需要管理这些远程仓库，以便推送或拉取数据，分享各自的工作进展。管理远程仓库的工作，包括添加远程库，移除废弃的远程库，管理各式远程库分支，定义是否跟踪这些分支，等等。本节我们将详细讨论远程库的管理和使用。
-查看当前的远程库
+要参与任何一个 Git 项目的协作，必须要了解该如何管理远程仓库。远程仓库是指托管在网络上的项目仓库，可能会有好多个，其中有些你只能读，另外有些可以写。同他人协作开发某个项目时，需要管理这些远程仓库，以便推送或拉取数据，分享各自的工作进展。管理远程仓库的工作，包括添加远程库，移除废弃的远程库，管理各式远程库分支，定义是否跟踪这些分支，等等。
+
+##查看当前的远程库
+
+(注：这里重新建一个版本仓库)
 
 要查看当前配置有哪些远程仓库，可以用 git remote 命令，它会列出每个远程库的简短名字。在克隆完某个项目后，至少可以看到一个名为 origin 的远程库，Git 默认使用这个名字来标识你所克隆的原始仓库：
 
-$ git clone git://github.com/schacon/ticgit.git
-    Initialized empty Git repository in /private/tmp/ticgit/.git/
-    remote: Counting objects: 595, done.
-    remote: Compressing objects: 100% (269/269), done.
-    remote: Total 595 (delta 255), reused 589 (delta 253)
-    Receiving objects: 100% (595/595), 73.31 KiB | 1 KiB/s, done.
-    Resolving deltas: 100% (255/255), done.
-    $ cd ticgit
-    $ git remote
-    origin
+	$ git clone git@github.com:dengyhgit/my-article.git
+	正克隆到 'my-article'...
+	Warning: Permanently added the RSA host key for IP address '192.30.252.128' to the list of known hosts.
+	remote: Counting objects: 25, done.
+	remote: Compressing objects: 100% (21/21), done.
+	remote: Total 25 (delta 2), reused 25 (delta 2)
+	接收对象中: 100% (25/25), 1.28 MiB | 131.00 KiB/s, 完成.
+	处理 delta 中: 100% (2/2), 完成.
+	检查连接... 完成。
+
 
 也可以加上 -v 选项（译注：此为 --verbose 的简写，取首字母），显示对应的克隆地址：
 
