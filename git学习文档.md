@@ -1,8 +1,8 @@
-#1. 初次运行 Git 前的配置
+#1. 首次运行 Git 的配置
 
 ##用户信息
 
-第一个要配置的是你个人的用户名称和电子邮件地址。这两条配置很重要，每次 Git 提交时都会引用这两条信息，说明是谁提交了更新，所以会随更新内容一起被永久纳入历史记录：
+第一个要配置的是你个人的用户名称和电子邮件地址。这两条配置很重要，每次 Git 提交时都会引用这两条信息，并随更新内容一起被永久纳入历史记录：
 
 	$ git config --global user.name "dyh"
     $ git config --global user.email cbyniypeu@xxx.com
@@ -11,9 +11,9 @@
 
 ##文本编辑器
 
-接下来要设置的是默认使用的文本编辑器。Git 需要你输入一些额外消息的时候，会自动调用一个外部文本编辑器给你用。默认会使用操作系统指定的默认编辑器，一般可能会是 Vi 或者 Vim。如果你有其他偏好，比如 Emacs 的话，可以重新设置：
+Git 需要你输入一些额外消息的时候，会自动调用一个外部文本编辑器给你用。默认会使用操作系统指定的默认编辑器。如果你喜欢使用其它编辑工具，可以重新设置：
 
-	$ git config --global core.editor emacs
+	$ git config --global core.editor vim
 
 ##差异分析工具
 
@@ -33,7 +33,7 @@
 		user.email=cbyniypeu@163.com
 	    ...
 
-有时候会看到重复的变量名，那就说明它们来自不同的配置文件，不过最终 Git 实际采用的是最后一个。
+重复的变量名 Git 将采用的是最后一个。
 
 也可以直接查阅某个环境变量的设定，只要把特定的名字跟在后面即可，如：
 
@@ -66,9 +66,9 @@
 
 	$ git clone git@github.com:dengyhgit/testGithub.git
 
-这会在当前目录下创建一个名为grit的目录，其中包含一个 .git 的目录，用于保存下载下来的所有版本记录，然后从中取出最新版本的文件拷贝。如果进入这个新建的 testGithub 目录，你会看到项目中的所有文件已经在里边了，准备好后续的开发和使用。如果希望在克隆的时候，自己定义要新建的项目目录名称，可以在上面的命令末尾指定新的名字：
+这会在当前目录下创建一个名为testGithub的目录，其中包含一个 .git 的目录，用于保存下载下来的所有版本记录，然后从中取出最新版本的文件拷贝。如果进入这个新建的 testGithub 目录，你会看到项目中的所有文件已经在里边了，准备好后续的开发和使用。如果希望在克隆的时候，自己定义要新建的项目目录名称，可以在上面的命令末尾指定新的名字：
 
-	$ git clone git://github.com/schacon/grit.git mygit
+	$ git clone git@github.com:dengyhgit/testGithub.git mygit
 
 唯一的差别就是，现在新建的目录成了 mygit，其他的都和上边的一样。
 Git 支持许多数据传输协议。之前的例子使用的是 SSH 协议，不过你也可以用 http(s):// 或者 git:// 表示的 git 传输协议。
@@ -977,8 +977,23 @@ $ git branch
 
 	git reset --soft 7496234588c36aed1476e2ef68c06ea7c
 
+##使用reflog挽救错误的重置
 
+一但用使用 git reset 重置回旧的版本， 在 git log 中将不再显示之前新版本中的提交日志信息，所以要返回之前新版本变得不可能， 因为我们根本无法记住那一串的commitID， 但是git提供 reflog给我们查看重置前的信息
 
+	$ git reflog
+	7496234 HEAD@{0}: reset: moving to 7496234588c36aed1476e2ef68c06ea7c446319a
+	b1aae24 HEAD@{1}: commit: mer txt
+	7496234 HEAD@{2}: commit: update gitstudy.md
+	97c2783 HEAD@{3}: commit: rm test
+	4c38bbb HEAD@{4}: commit: test push
+	01e76b4 HEAD@{5}: commit: test fetch
+	fcb4c9b HEAD@{6}: commit: add git study
+	...
+
+使用git reset --hard HEAD@{?}回到你想回滚的版本：
+
+	$ git reset --hard HEAD@{2}
 
 #11. 协议
 
